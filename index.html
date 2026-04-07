@@ -5,10 +5,13 @@
     <title>Hydra-Music | Streaming Libre</title>
     <style>
         body { background: #0a0a0a; color: #00ff41; font-family: 'Courier New', monospace; text-align: center; }
-        .container { margin-top: 50px; border: 1px solid #00ff41; display: inline-block; padding: 20px; }
+        .container { margin-top: 50px; border: 1px solid #00ff41; display: inline-block; padding: 20px; box-shadow: 0 0 15px #00ff41; }
         .status { color: #ff0000; animation: blink 1s infinite; }
+        .online { color: #00ff41 !important; animation: none !important; text-shadow: 0 0 10px #00ff41; }
         @keyframes blink { 50% { opacity: 0; } }
-        button { background: #00ff41; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        button { background: #00ff41; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #fff; box-shadow: 0 0 20px #00ff41; }
+        #player { margin-top: 20px; padding: 15px; border: 1px dashed #00ff41; }
     </style>
 </head>
 <body>
@@ -16,26 +19,45 @@
         <h1>HYDRA-MUSIC SYSTEM</h1>
         <p>ESTADO DEL BÚNKER: <span class="status" id="state">SINCRONIZANDO...</span></p>
         <div id="player">
-            <p>Esperando inyección de base de datos...</p>
+            <p id="msg">Esperando inyección de base de datos...</p>
         </div>
         <hr>
-        <button onclick="alert('Conectando a FaucetPay...')">RETIRAR GANANCIAS</button>
+        <!-- AQUÍ INYECTAREMOS EL ENLACE DIRECTO DE ADSTERRA -->
+        <button onclick="retirar()">RETIRAR GANANCIAS</button>
     </div>
 
     <script>
-        // ESTA ES LA LLAVE QUE LEERÁ TU REPOSITORIO
+        // LA RUTA REAL A TU BASE DE DATOS (RAW)
         const DB_URL = "https://githubusercontent.com";
         
         async function loadHydra() {
             try {
-                const res = await fetch(DB_URL);
-                if(res.ok) {
-                    document.getElementById('state').innerText = "ONLINE";
-                    document.getElementById('state').style.color = "#00ff41";
+                // El truco para evitar el caché: añadimos un número aleatorio al final
+                const res = await fetch(DB_URL + "?t=" + Math.random());
+                const data = await res.json();
+                
+                if(data.status === "ONLINE") {
+                    const stateElem = document.getElementById('state');
+                    stateElem.innerText = "ONLINE";
+                    stateElem.className = "online";
+                    
+                    document.getElementById('msg').innerHTML = `
+                        <p>INYECCIÓN EXITOSA. CARGANDO PLAYLIST VIPS...</p>
+                        <!-- Aquí pondremos el reproductor de video más tarde -->
+                    `;
                 }
-            } catch(e) { console.log("Hydra Offline"); }
+            } catch(e) { console.log("Error de conexión con el Búnker"); }
         }
-        setInterval(loadHydra, 5000);
+
+        function retirar() {
+            // Aquí pegaremos tu "Direct Link" de Adsterra para cobrar por cada clic
+            alert('Sincronizando con FaucetPay... Por favor, completa la verificación en la siguiente ventana.');
+            // window.location.href = "TU_LINK_DE_ADSTERRA_AQUI";
+        }
+
+        // Revisa el estado cada 3 segundos
+        setInterval(loadHydra, 3000);
+        loadHydra();
     </script>
 </body>
 </html>
