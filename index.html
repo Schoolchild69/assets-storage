@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Hydra-Music | Streaming Libre</title>
+    <style>
+        body { background: #0a0a0a; color: #00ff41; font-family: 'Courier New', monospace; text-align: center; }
+        .container { margin-top: 50px; border: 1px solid #00ff41; display: inline-block; padding: 20px; }
+        .status { color: #ff0000; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+        button { background: #00ff41; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HYDRA-MUSIC SYSTEM</h1>
+        <p>ESTADO DEL BÚNKER: <span class="status" id="state">SINCRONIZANDO...</span></p>
+        <div id="player">
+            <p>Esperando inyección de base de datos...</p>
+        </div>
+        <hr>
+        <button onclick="alert('Conectando a FaucetPay...')">RETIRAR GANANCIAS</button>
+    </div>
+
+    <script>
+        // ESTA ES LA LLAVE QUE LEERÁ TU REPOSITORIO
+        const DB_URL = "https://githubusercontent.com";
+        
+        async function loadHydra() {
+            try {
+                const res = await fetch(DB_URL);
+                if(res.ok) {
+                    document.getElementById('state').innerText = "ONLINE";
+                    document.getElementById('state').style.color = "#00ff41";
+                }
+            } catch(e) { console.log("Hydra Offline"); }
+        }
+        setInterval(loadHydra, 5000);
+    </script>
+</body>
+</html>
