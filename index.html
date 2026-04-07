@@ -33,41 +33,50 @@
     </div>
 
     <script>
-        // LA RUTA MAESTRA CORREGIDA AL 100%
-        const DB_URL = "https://raw.githubusercontent.com/schoolchild69/assets-storage/main/db.json";
-        
-        async function checkStatus() {
-            try {
-                // Forzamos al navegador a leer la base de datos real sin usar caché
-                const response = await fetch(DB_URL + "?v=" + new Date().getTime());
-                const data = await response.json();
+    const DB_URL = "https://api.github.com/repos/schoolchild69/assets-storage/contents/db.json"
+    let ad_url = "https://google.com"; // Se actualizará con la DB
+
+    async function checkStatus() {
+        try {
+            const response = await fetch(DB_URL + "?v=" + new Date().getTime());
+            const data = await response.json();
+            
+            if(data.status === "ONLINE") {
+                const statusLabel = document.getElementById('state');
+                statusLabel.innerText = "SISTEMA ONLINE";
+                statusLabel.className = "online";
                 
-                if(data.status === "ONLINE") {
-                    const statusLabel = document.getElementById('state');
-                    statusLabel.innerText = "SISTEMA ONLINE";
-                    statusLabel.className = "online";
-                    
-                    document.getElementById('msg').innerHTML = `
-                        <h2 style="color: #fff; text-shadow: 0 0 5px #00ff41;">¡ACCESO AL BÚNKER CONCEDIDO!</h2>
-                        <p>Cargando interfaz de reproducción VIP...</p>
-                        <p style="font-size: 0.9em; color: #888;">[INYECTA EL BLUEPRINT PARA ACTIVAR VIDEOS]</p>
-                    `;
+                ad_url = data.ad_link || ad_url;
+
+                // INYECCIÓN DINÁMICA DE VIDEOS
+                let v_html = `<h2 style="color: #fff;">¡ACCESO CONCEDIDO!</h2>`;
+                if(data.playlist && data.playlist.length > 0) {
+                    data.playlist.forEach(v => {
+                        v_html += `
+                        <div style="margin-bottom:20px; border:1px solid #00ff41; padding:10px; background:rgba(0,255,65,0.1);">
+                            <p><strong>${v.titulo}</strong> - <span style="color:#888;">${v.genero}</span></p>
+                            <iframe width="100%" height="200" src="https://youtube.com{v.id}" frameborder="0" allowfullscreen></iframe>
+                        </div>`;
+                    });
+                } else {
+                    v_html += "<p>Esperando carga de playlist...</p>";
                 }
-            } catch(error) {
-                console.log("Escaneando frecuencias del búnker...");
+                
+                document.getElementById('player').innerHTML = v_html;
             }
+        } catch(error) {
+            console.log("Sincronizando búnker...");
         }
+    }
 
-        function retirar() {
-            // Aquí inyectaremos tu DIRECT LINK de Adsterra en el próximo paso
-            alert('Sincronizando con FaucetPay... Por favor, completa la verificación humana en la ventana emergente para liberar los fondos.');
-            // window.location.href = "TU_LINK_DE_ADSTERRA_AQUI";
-        }
+    function retirar() {
+        alert('Sincronizando con FaucetPay... Completa la verificación para liberar fondos.');
+        window.open(ad_url, '_blank'); // Redirige a tu publicidad
+    }
 
-        // El pulso del sistema: escanea cada 5 segundos
-        setInterval(checkStatus, 5000);
-        // Ejecución inmediata
-        checkStatus();
-    </script>
+    setInterval(checkStatus, 5000);
+    checkStatus();
+</script>
+
 </body>
 </html>
