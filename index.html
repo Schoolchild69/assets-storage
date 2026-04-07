@@ -2,62 +2,72 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hydra-Music | Streaming Libre</title>
     <style>
-        body { background: #0a0a0a; color: #00ff41; font-family: 'Courier New', monospace; text-align: center; }
-        .container { margin-top: 50px; border: 1px solid #00ff41; display: inline-block; padding: 20px; box-shadow: 0 0 15px #00ff41; }
-        .status { color: #ff0000; animation: blink 1s infinite; }
-        .online { color: #00ff41 !important; animation: none !important; text-shadow: 0 0 10px #00ff41; }
+        body { background: #0a0a0a; color: #00ff41; font-family: 'Courier New', monospace; text-align: center; margin: 0; padding: 20px; }
+        .container { border: 2px solid #00ff41; display: inline-block; padding: 40px; box-shadow: 0 0 25px #00ff41; background: #000; max-width: 90%; }
+        .status { color: #ff4444; animation: blink 1s infinite; font-weight: bold; text-transform: uppercase; }
+        .online { color: #00ff41 !important; animation: none !important; text-shadow: 0 0 15px #00ff41; }
         @keyframes blink { 50% { opacity: 0; } }
-        button { background: #00ff41; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #fff; box-shadow: 0 0 20px #00ff41; }
-        #player { margin-top: 20px; padding: 15px; border: 1px dashed #00ff41; }
+        button { background: #00ff41; color: #000; border: none; padding: 15px 40px; cursor: pointer; font-weight: bold; font-size: 1.2em; transition: 0.4s; margin-top: 30px; border-radius: 5px; }
+        button:hover { background: #fff; box-shadow: 0 0 40px #00ff41; transform: translateY(-3px); }
+        #player { margin-top: 30px; padding: 25px; border: 2px dashed #00ff41; min-height: 100px; background: rgba(0, 255, 65, 0.05); }
+        h1 { letter-spacing: 7px; text-shadow: 3px 3px #ff0000; margin-bottom: 10px; }
+        hr { border: 0; border-top: 1px solid #00ff41; margin: 25px 0; opacity: 0.5; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>HYDRA-MUSIC SYSTEM</h1>
-        <p>ESTADO DEL BÚNKER: <span class="status" id="state">SINCRONIZANDO...</span></p>
+        <p style="font-size: 1.3em;">ESTADO DEL BÚNKER: <span class="status" id="state">SINCRONIZANDO...</span></p>
+        
         <div id="player">
-            <p id="msg">Esperando inyección de base de datos...</p>
+            <p id="msg">Esperando inyección de base de datos desde la terminal maestra...</p>
         </div>
+        
         <hr>
-        <!-- AQUÍ INYECTAREMOS EL ENLACE DIRECTO DE ADSTERRA -->
+        
+        <!-- ESTE BOTÓN ES TU CAJERO AUTOMÁTICO -->
         <button onclick="retirar()">RETIRAR GANANCIAS</button>
     </div>
 
     <script>
-        // LA RUTA REAL A TU BASE DE DATOS (RAW)
-        const DB_URL = "https://githubusercontent.com";
+        // LA RUTA MAESTRA CORREGIDA AL 100%
+        const DB_URL = "https://raw.githubusercontent.com/schoolchild69/assets-storage/main/db.json";
         
-        async function loadHydra() {
+        async function checkStatus() {
             try {
-                // El truco para evitar el caché: añadimos un número aleatorio al final
-                const res = await fetch(DB_URL + "?t=" + Math.random());
-                const data = await res.json();
+                // Forzamos al navegador a leer la base de datos real sin usar caché
+                const response = await fetch(DB_URL + "?v=" + new Date().getTime());
+                const data = await response.json();
                 
                 if(data.status === "ONLINE") {
-                    const stateElem = document.getElementById('state');
-                    stateElem.innerText = "ONLINE";
-                    stateElem.className = "online";
+                    const statusLabel = document.getElementById('state');
+                    statusLabel.innerText = "SISTEMA ONLINE";
+                    statusLabel.className = "online";
                     
                     document.getElementById('msg').innerHTML = `
-                        <p>INYECCIÓN EXITOSA. CARGANDO PLAYLIST VIPS...</p>
-                        <!-- Aquí pondremos el reproductor de video más tarde -->
+                        <h2 style="color: #fff; text-shadow: 0 0 5px #00ff41;">¡ACCESO AL BÚNKER CONCEDIDO!</h2>
+                        <p>Cargando interfaz de reproducción VIP...</p>
+                        <p style="font-size: 0.9em; color: #888;">[INYECTA EL BLUEPRINT PARA ACTIVAR VIDEOS]</p>
                     `;
                 }
-            } catch(e) { console.log("Error de conexión con el Búnker"); }
+            } catch(error) {
+                console.log("Escaneando frecuencias del búnker...");
+            }
         }
 
         function retirar() {
-            // Aquí pegaremos tu "Direct Link" de Adsterra para cobrar por cada clic
-            alert('Sincronizando con FaucetPay... Por favor, completa la verificación en la siguiente ventana.');
+            // Aquí inyectaremos tu DIRECT LINK de Adsterra en el próximo paso
+            alert('Sincronizando con FaucetPay... Por favor, completa la verificación humana en la ventana emergente para liberar los fondos.');
             // window.location.href = "TU_LINK_DE_ADSTERRA_AQUI";
         }
 
-        // Revisa el estado cada 3 segundos
-        setInterval(loadHydra, 3000);
-        loadHydra();
+        // El pulso del sistema: escanea cada 5 segundos
+        setInterval(checkStatus, 5000);
+        // Ejecución inmediata
+        checkStatus();
     </script>
 </body>
 </html>
